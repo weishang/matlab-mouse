@@ -54,7 +54,12 @@ function gui_mouse_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for gui_mouse
 handles.output = hObject;
-movables = {handles.lbl_target_1, handles.lbl_target_2, handles.lbl_target_3};
+
+ah = axes;
+plot( rand(1,10));
+set(ah, 'position', [0.7 0.8 0.2 0.2],'unit', 'pixel');
+
+movables = {handles.lbl_target_1, handles.lbl_target_2, handles.lbl_target_3, ah};
 for i = 1:length(movables)
     cur_target = movables{i};
     uistack(cur_target, 'top'); 

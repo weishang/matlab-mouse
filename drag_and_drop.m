@@ -12,8 +12,8 @@ target_id = [];
 % find out which one the mouse is on top of right now 
 for i = 1:length(target_handles)
     % get position information of the uicontrol
-    lbl_target = target_handles{i};
-    bounds = get(lbl_target,'position');
+    object_handle = target_handles{i};
+    bounds = get(object_handle,'position');
     lx = bounds(1); ly = bounds(2);
     lw = bounds(3); lh = bounds(4);
     if (x >= lx && x <= (lx + lw) && y >= ly && y <= (ly + lh))
@@ -22,19 +22,23 @@ for i = 1:length(target_handles)
     end
 end
 for i = 1:length(target_handles)
-    lbl_target = target_handles{i};
+    object_handle = target_handles{i};
     if target_id == i 
         % set enable to off so that the whole static text field is hotspot
-        set(lbl_target, 'enable', 'off');
-        set(lbl_target, 'string', 'IN');
-        set(lbl_target, 'backgroundcolor', 'red');
-        set(lbl_target, 'ButtonDownFcn', @grab);
+        if ( ~strcmp( get(object_handle, 'type'), 'axes') )
+            set(object_handle, 'enable', 'off');
+            set(object_handle, 'string', 'IN');
+            set(object_handle, 'backgroundcolor', 'red');
+        end
+        set(object_handle, 'ButtonDownFcn', @grab);
         setfigptr('hand', handles.fig_mouse);
     else
         % re-enable the uicontrol
-        set(lbl_target, 'enable', 'on');
-        set(lbl_target,'string', 'OUT');
-        set(lbl_target, 'backgroundcolor', 'green');
+        if ( ~strcmp( get(object_handle, 'type'), 'axes') )        
+            set(object_handle, 'enable', 'on');
+            set(object_handle,'string', 'OUT');
+            set(object_handle, 'backgroundcolor', 'green');
+        end
     end
 end
 if isempty(target_id)
@@ -49,8 +53,8 @@ end
         % computing x, y difference between pointer and uicontrol 
         % so that the movement can be in sync
         mouse_pos = get(fig_handle, 'currentpoint'); 
-        lbl_target = target_handle;
-        target_pos = get(lbl_target,'position');
+        object_handle = target_handle;
+        target_pos = get(object_handle,'position');
         dx = mouse_pos(1) - target_pos(1);
         dy = mouse_pos(2) - target_pos(2);
         set(handles.lbl_last_action, 'string', ['Mouse pressed @ X: ', num2str(mouse_pos(1)), ', Y: ', num2str(mouse_pos(2))]);        
@@ -69,11 +73,11 @@ end
             set(handles.lbl_last_action, 'string', ['Mouse moved @ X: ', num2str(x), ', Y: ', num2str(y)]);            
             
             % get uicontrol width and height
-            target_pos = get(lbl_target,'position');
+            target_pos = get(object_handle,'position');
             tw = target_pos(3); th = target_pos(4);
             % update uicontrol position based on the computed x,y locations
             target_pos = [x-dx, y-dy, tw, th];
-            set(lbl_target,'position', target_pos);
+            set(object_handle,'position', target_pos);
             
         end
         
